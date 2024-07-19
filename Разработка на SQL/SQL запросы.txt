@@ -1,0 +1,89 @@
+-- Создание базы данных
+CREATE DATABASE SalesDB;
+
+CREATE TABLE Sellers
+(
+	ID SERIAL PRIMARY KEY,
+	Surname VARCHAR(50),
+	Name VARCHAR(50)
+);
+
+CREATE TABLE Products
+(
+	ID SERIAL PRIMARY KEY,
+	Name VARCHAR(100),
+	Price FLOAT
+);
+
+CREATE TABLE Sales
+(
+	ID SERIAL PRIMARY KEY,
+	IDSel INT,
+	IDProd INT,
+	Date TIMESTAMP,
+	Quantity FLOAT,
+	FOREIGN KEY (IDSel) REFERENCES Sellers (ID),
+	FOREIGN KEY (IDProd) REFERENCES Products (ID)
+);
+
+CREATE TABLE Arrivals
+(
+	ID SERIAL PRIMARY KEY,
+	IDProd INT,
+	Date TIMESTAMP,
+	Quantity FLOAT,
+	FOREIGN KEY (IDProd) REFERENCES Products (ID)
+);
+
+
+
+
+-- Запросы к БД
+
+-- Запрос №1
+
+SELECT Sellers.Surname, Sellers.Name, SUM(Sales.Quantity) AS Total_sales
+FROM Sales
+INNER JOIN Sellers ON Sales.IDSel = Sellers.ID
+WHERE Sales.Date BETWEEN '2013-10-01' AND '2013-10-07'
+GROUP BY Sellers.Surname, Sellers.Name
+ORDER BY Sellers.Surname, Sellers.Name;
+
+
+-- Запрос №2
+
+-- Общие продажи
+WITH Common_Sales AS
+(
+	SELECT p.ID AS ProductID, SUM(s.Quantity) AS Total_count
+	FROM Sales s
+	INNER JOIN Products p ON s.IDProd = p.ID
+	GROUP BY  p.ID
+),
+
+-- Продажи за заданный диапазон
+Sales_in_datarange AS
+(
+	SELECT p.ID AS ProductId, p.Name AS Product_name, slrs.Surname AS Surname, slrs.Name AS Name, SUM(s.Quantity) AS Sum_in_daterange
+	FROM Sales s
+	INNER JOIN Sellers slrs ON s.IDSel = slrs.ID
+	INNER JOIN Products p ON s.IDProd = p.ID
+	WHERE s.Date BETWEEN '2013-10-01' AND '2013-10-07'
+	GROUP BY p.ID, p.Name, slrs.Surname, slrs.Name
+),
+
+-- Поступление товаров за указанный диапазон
+Arrived_products_in_datarange AS
+(
+	SELECT p.ID AS ProductID
+	FROM arrivals a
+	INNER JOIN Products p ON a.IDProd = p.ID
+	WHERE a.Date BETWEEN '2013-09-07' AND '2013-10-07'
+)
+
+-- Итоговый запрос	
+SELECT sid.Product_name, sid.Surname, sid.Name, (sid.Sum_in_daterange / cs.Total_count * 100) AS Sales_percent
+FROM Sales_in_datarange sid
+INNER JOIN Common_Sales cs ON sid.ProductID = cs.ProductID
+INNER JOIN Arrived_products_in_datarange ap ON sid.ProductID = ap.ProductID
+ORDER BY sid.Product_name, sid.Surname, sid.Name;
