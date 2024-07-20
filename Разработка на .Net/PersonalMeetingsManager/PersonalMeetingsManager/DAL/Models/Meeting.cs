@@ -10,5 +10,14 @@ namespace PersonalMeetingsManager.DAL.Models
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
         public int MeetingNotificationTimeInMinutes { get; set; }
+
+        public Meeting Clone() =>        
+            new Meeting { 
+                Id = Id, 
+                Subject = Subject, 
+                StartDateTime = StartDateTime, 
+                EndDateTime = EndDateTime 
+            }; 
+        
     }
 }

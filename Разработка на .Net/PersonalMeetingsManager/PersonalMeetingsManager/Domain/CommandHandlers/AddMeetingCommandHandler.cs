@@ -7,10 +7,17 @@ namespace PersonalMeetingsManager.Domain.CommandHandlers
     internal class AddMeetingCommandHandler
     {
         private readonly IMeetingsRepository _repository;
+        private readonly ILastCommandInfo _lastCommandInfo;
+        private readonly IConsoleCommandHandler _consoleCommandHandler;
+        private string _command;
 
-        internal AddMeetingCommandHandler(IMeetingsRepository repository)
+        internal AddMeetingCommandHandler(IMeetingsRepository repository, 
+                                          ILastCommandInfo lastCommandInfo,
+                                          IConsoleCommandHandler consoleCommandHandler)
         {
             _repository = repository;
+            _lastCommandInfo = lastCommandInfo;
+            _consoleCommandHandler = consoleCommandHandler;
         }
 
         internal async Task AddMeetingAsync()
@@ -18,8 +25,17 @@ namespace PersonalMeetingsManager.Domain.CommandHandlers
             var newMeeting = new Meeting();
             IFormatProvider provider = new CultureInfo("ru-RU");
 
-            Console.Write("Введите тему встречи: ");
+            /*_command = "Введите тему встречи: ";
+            _lastCommandInfo.LastCommand = _command;
+            Console.Write(_command);
+            var (Left, _) = Console.GetCursorPosition();
+            _lastCommandInfo.LastPosition = Left;*/
+
+            WriteCommandToConsole("Введите тему встречи: ");
             var subject = Console.ReadLine();
+            subject = _consoleCommandHandler
+                .RemoveOldTextAfterMoveToNewLine(_command, subject);
+
             if (string.IsNullOrWhiteSpace(subject))
             {
                 Console.WriteLine("Тема встречи не может быть пустой. Операция создания новой встречи отменена");
@@ -27,8 +43,22 @@ namespace PersonalMeetingsManager.Domain.CommandHandlers
             }
             newMeeting.Subject = subject;
 
-            Console.Write("Введите время начала встречи в формате [ДД.ММ.ГГГГ ЧЧ:ММ]: ");
+            /*_command = "Введите время начала встречи в формате [ДД.ММ.ГГГГ ЧЧ:ММ]: ";
+            _lastCommandInfo.LastCommand = _command;
+            Console.Write(_command);
+            (Left, _) = Console.GetCursorPosition();
+            _lastCommandInfo.LastPosition = Left;*/
+            WriteCommandToConsole("Введите время начала встречи в формате [ДД.ММ.ГГГГ ЧЧ:ММ]: ");
             var startDateTimeString = Console.ReadLine();
+            //var (Left, Top) = Console.GetCursorPosition();
+            /*var strLength = _lastCommandInfo.LastPosition - _command.Length;
+            if (strLength > 0)
+            {
+                startDateTimeString = startDateTimeString.Substring(strLength);
+            }*/
+            startDateTimeString = _consoleCommandHandler
+                .RemoveOldTextAfterMoveToNewLine(_command, startDateTimeString);
+
             DateTime startDateTime;
             try
             {
@@ -46,8 +76,16 @@ namespace PersonalMeetingsManager.Domain.CommandHandlers
             }
             newMeeting.StartDateTime = startDateTime;
 
-            Console.Write("Введите время окончания встречи в формате [ДД.ММ.ГГГГ ЧЧ:ММ]: ");
+            /*_command = "Введите время окончания встречи в формате [ДД.ММ.ГГГГ ЧЧ:ММ]: ";
+            _lastCommandInfo.LastCommand = _command;
+            Console.Write(_command);
+            (Left, _) = Console.GetCursorPosition();
+            _lastCommandInfo.LastPosition = Left;*/
+            WriteCommandToConsole("Введите время окончания встречи в формате [ДД.ММ.ГГГГ ЧЧ:ММ]: ");
             var endDateTimeString = Console.ReadLine();
+            endDateTimeString = _consoleCommandHandler
+                .RemoveOldTextAfterMoveToNewLine(_command, endDateTimeString);
+
             DateTime endDateTime;
             try
             {
@@ -65,8 +103,17 @@ namespace PersonalMeetingsManager.Domain.CommandHandlers
             }
             newMeeting.EndDateTime = endDateTime;
 
-            Console.Write("Введите время напоминания о встрече в минутах: ");
-            if (!int.TryParse(Console.ReadLine(), out int notificationTime))
+            /*_command = "Введите время напоминания о встрече в минутах: ";
+            _lastCommandInfo.LastCommand = _command;
+            Console.Write(_command);
+            (Left, _) = Console.GetCursorPosition();
+            _lastCommandInfo.LastPosition = Left;*/
+            WriteCommandToConsole("Введите время напоминания о встрече в минутах: ");
+            var notificationTimeString = Console.ReadLine();
+            notificationTimeString = _consoleCommandHandler
+                .RemoveOldTextAfterMoveToNewLine(_command, notificationTimeString);
+
+            if (!int.TryParse(notificationTimeString, out int notificationTime))
             {
                 Console.WriteLine("Задано некорректное время напоминания о встрече. Операция создания новой встречи отменена");
                 return;
@@ -83,6 +130,16 @@ namespace PersonalMeetingsManager.Domain.CommandHandlers
             var meeting = await _repository.AddMeetingAsync(newMeeting);
             Console.WriteLine("Создана новая встреча:");
             Console.WriteLine(MeetingInfoFormatter.GetMeetingInfoString(meeting));
+        }
+
+        private void WriteCommandToConsole(string command)
+        {
+            _command = command;
+            _lastCommandInfo.LastCommand = _command;
+            Console.Write(_command);
+            /*var*/
+            var (Left, _) = Console.GetCursorPosition();
+            _lastCommandInfo.LastPosition = Left;
         }
     }
 }
