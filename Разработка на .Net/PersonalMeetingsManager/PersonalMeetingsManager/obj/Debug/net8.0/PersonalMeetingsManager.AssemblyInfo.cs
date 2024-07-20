@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PersonalMeetingsManager")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+61e2121822b881b9a9c46ce7cf33f69f5ee291f2")]
 [assembly: System.Reflection.AssemblyProductAttribute("PersonalMeetingsManager")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PersonalMeetingsManager")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

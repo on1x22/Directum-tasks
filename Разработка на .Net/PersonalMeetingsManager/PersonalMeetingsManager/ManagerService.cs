@@ -7,10 +7,15 @@ namespace PersonalMeetingsManager
     internal class ManagerService : IManagerService
     {
         private readonly IMeetingsRepository _repository;
+        private readonly ILastCommandInfo _lastCommandHandler;
+        private readonly IConsoleCommandHandler _consoleCommandHandler;
         
-        public ManagerService(IMeetingsRepository repository) 
+        public ManagerService(IMeetingsRepository repository, ILastCommandInfo lastCommandHandler,
+                              IConsoleCommandHandler consoleCommandHandler) 
         {
             _repository = repository;
+            _lastCommandHandler = lastCommandHandler;
+            _consoleCommandHandler = consoleCommandHandler;
         }
 
         public async Task Execute(string commandString)
@@ -31,7 +36,9 @@ namespace PersonalMeetingsManager
                         ShowHelp();
                         break;
                     case "Добавить":
-                        var amcHandler = new AddMeetingCommandHandler(_repository);
+                        var amcHandler = new AddMeetingCommandHandler(_repository, 
+                                                                      _lastCommandHandler,
+                                                                      _consoleCommandHandler);
                         await amcHandler.AddMeetingAsync();
                         //await AddMeetingAsync();
                         break;

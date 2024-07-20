@@ -14,6 +14,8 @@ namespace PersonalMeetingsManager
                 .AddSingleton<IMeetingsRepository, MeetingsRepository>()
                 .AddSingleton<IManagerService, ManagerService>()
                 .AddSingleton<IMeetingsInspectorService, MeetingsInspectorService>()
+                .AddSingleton<ILastCommandInfo, LastCommandInfo>()
+                .AddTransient<IConsoleCommandHandler, ConsoleCommandHandler>()
                 .AddDbContext<MeetingsDbContext>(options =>
                     options.UseInMemoryDatabase("MeetingsDb"))
                 .BuildServiceProvider();
@@ -25,13 +27,17 @@ namespace PersonalMeetingsManager
             Console.WriteLine();
 
             var mi = serviceProvider.GetService<IMeetingsInspectorService>();
-            //Thread inspectNotifications = new Thread(mi.InspectMeetings);
+            //Thread inspectNotifications = new Thread(await Task.Run(mi.InspectMeetingsAsync));
             //inspectNotifications.Start();
-            await Task.Run(mi.InspectMeetings);
+            Task ds = Task.Run(mi.InspectMeetingsAsync);
+
+            var lastCommandHandler = serviceProvider.GetService<ILastCommandInfo>();
 
             while (true)
-            {                
-                Console.Write("Введите команду: ");
+            {
+                var lastCommand = "Введите команду: ";
+                lastCommandHandler.LastCommand = lastCommand;
+                Console.Write(lastCommand);
                 var command = Console.ReadLine();                
                 await ms.Execute(command);
                 Console.WriteLine();

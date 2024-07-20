@@ -25,3 +25,4 @@ D:\Для работы\Тестовые задания\Directum\Задания\�
 D:\Для работы\Тестовые задания\Directum\Задания\Разработка на .Net\PersonalMeetingsManager\PersonalMeetingsManager\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
 D:\Для работы\Тестовые задания\Directum\Задания\Разработка на .Net\PersonalMeetingsManager\PersonalMeetingsManager\obj\Debug\net8.0\PersonalMeetingsManager.csproj.AssemblyReference.cache
 D:\Для работы\Тестовые задания\Directum\Задания\Разработка на .Net\PersonalMeetingsManager\PersonalMeetingsManager\obj\Debug\net8.0\Personal.07555CE1.Up2Date
+D:\Для работы\Тестовые задания\Directum\Задания\Разработка на .Net\PersonalMeetingsManager\PersonalMeetingsManager\obj\Debug\net8.0\PersonalMeetingsManager.sourcelink.json

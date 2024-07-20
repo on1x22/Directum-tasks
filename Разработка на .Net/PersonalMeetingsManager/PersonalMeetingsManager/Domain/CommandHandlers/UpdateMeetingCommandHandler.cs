@@ -22,7 +22,7 @@ namespace PersonalMeetingsManager.Domain.CommandHandlers
             }
 
             var meetingFromDb = await _repository.GetMeetingByIdAsync(meetingId);
-            var meetingForUpdate = new Meeting() { Id = meetingFromDb.Id };
+            var meetingForUpdate = /*new Meeting() { Id = meetingFromDb.Id };*/meetingFromDb.Clone();
             if (meetingFromDb == null)
             {
                 Console.WriteLine($"Встреча с Id={meetingId} не существует");
