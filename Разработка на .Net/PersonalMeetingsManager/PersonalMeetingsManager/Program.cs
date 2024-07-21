@@ -26,9 +26,7 @@ namespace PersonalMeetingsManager
             ms.ShowHelp();
             Console.WriteLine();
 
-            var mi = serviceProvider.GetService<IMeetingsInspectorService>();
-            //Thread inspectNotifications = new Thread(await Task.Run(mi.InspectMeetingsAsync));
-            //inspectNotifications.Start();
+            var mi = serviceProvider.GetService<IMeetingsInspectorService>();            
             Task ds = Task.Run(mi.InspectMeetingsAsync);
 
             var lastCommandHandler = serviceProvider.GetService<ILastCommandInfo>();
@@ -42,8 +40,6 @@ namespace PersonalMeetingsManager
                 await ms.Execute(command);
                 Console.WriteLine();
             }
-
-            Console.ReadKey();
         }
     }
 }

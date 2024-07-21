@@ -6,16 +6,16 @@ namespace PersonalMeetingsManager.Domain
     internal class MeetingsInspectorService : IMeetingsInspectorService
     {
         private readonly IMeetingsRepository _repository;
-        private readonly ILastCommandInfo _lastCommandHandler;
+        private readonly ILastCommandInfo _lastCommandInfo;
         private readonly IConsoleCommandHandler _consoleCommandHandler;
         private const int ONE_MINUTE = 60 * 1000;
 
         public MeetingsInspectorService(IMeetingsRepository repository,
-                                        ILastCommandInfo lastCommandHandler,
+                                        ILastCommandInfo lastCommandInfo,
                                         IConsoleCommandHandler consoleCommandHandler) 
         {
             _repository = repository;
-            _lastCommandHandler = lastCommandHandler;
+            _lastCommandInfo = lastCommandInfo;
             _consoleCommandHandler = consoleCommandHandler;
         }
 
@@ -35,7 +35,7 @@ namespace PersonalMeetingsManager.Domain
                     0);
                 var actualMeetings = await _repository.GetUpcomingMeetings(dateTimeWithoutSeconds);
 
-                _consoleCommandHandler.WriteNotificationOnNewLine($"Текущее время: {nowDateTime}");
+                //_consoleCommandHandler.WriteNotificationOnNewLine($"Текущее время: {nowDateTime}");
                 /*var (Left, _) = Console.GetCursorPosition();
                 if (Left > 0)
                 {
@@ -46,10 +46,12 @@ namespace PersonalMeetingsManager.Domain
                     Console.Write(_lastCommandHandler.LastCommand);
                 }*/
                 //Console.WriteLine("Текущее время: " + nowDateTime);
-                
-                
+
+
                 //var dt = new DateTime(nowDateTime.Year, nowDateTime.Month, nowDateTime.Day, nowDateTime.Hour, nowDateTime.Minute, 0);
 
+                var (LeftBeforeNotification, TopBeforeNotifications) = Console.GetCursorPosition();
+                _lastCommandInfo.LastPosition =LeftBeforeNotification;
                 foreach (var meeting in actualMeetings)
                 {
                     /*var remainingTime = meeting.StartDateTime.AddMinutes(-meeting.NotificationTime) - dt;
@@ -62,6 +64,13 @@ namespace PersonalMeetingsManager.Domain
                         Console.WriteLine($"Внимание! Через {meeting.NotificationTime} минут начнется встреча {meeting.Id} с {meeting.StartDateTime}. Напоминание за {meeting.NotificationTime} минут");*/
                     InspectNotifications(meeting, dateTimeWithoutSeconds, isFirstStart);
                     InspectStartOfMeetings(meeting, dateTimeWithoutSeconds);
+                }
+                
+                var (_, TopAfterNotifications) = Console.GetCursorPosition();
+                if (TopBeforeNotifications < TopAfterNotifications)
+                {
+                    Console.WriteLine();
+                    Console.Write(_lastCommandInfo.LastCommand);
                 }
 
                 isFirstStart = false;
@@ -119,11 +128,11 @@ namespace PersonalMeetingsManager.Domain
             var (Left, _) = Console.GetCursorPosition();
             if (Left > 0)
             {
-                _lastCommandHandler.LastPosition = Left;
+                _lastCommandInfo.LastPosition = Left;
                 Console.WriteLine();
                 Console.WriteLine(MeetingInfoFormatter.GetStartOfMeetingString(meeting));
                 Console.WriteLine();
-                Console.Write(_lastCommandHandler.LastCommand);
+                Console.Write(_lastCommandInfo.LastCommand);
             }
         }
     }

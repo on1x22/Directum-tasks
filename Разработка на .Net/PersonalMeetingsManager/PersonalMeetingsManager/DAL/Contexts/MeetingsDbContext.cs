@@ -124,11 +124,7 @@ namespace PersonalMeetingsManager.DAL.Contexts
                             new TimeOnly(dateTime16MinutesAfterNow.Hour, 
                                          dateTime16MinutesAfterNow.Minute)
                             ),
-                        EndDateTime = new DateTime(
-                            /*new DateOnly(dateTimeNow.Year,
-                                         dateTimeNow.Month,
-                                         dateTimeNow.Day), 
-                            new TimeOnly(13, 0)*/
+                        EndDateTime = new DateTime(                           
                             new DateOnly(dateTime16MinutesAfterNow.AddMinutes(7).Year,
                                          dateTime16MinutesAfterNow.AddMinutes(7).Month,
                                          dateTime16MinutesAfterNow.AddMinutes(7).Day),
@@ -198,7 +194,7 @@ namespace PersonalMeetingsManager.DAL.Contexts
                     new Meeting()
                     {
                         Id = 10,
-                        Subject = "Встреча, начинающаяся завтра и закончивающаяся послезавтра",
+                        Subject = "Встреча, начинающаяся завтра и заканчивающаяся послезавтра",
                         StartDateTime = new DateTime(
                             new DateOnly(dateTimeNow.Year, 
                                          dateTimeNow.Month, 

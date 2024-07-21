@@ -5,7 +5,8 @@ namespace PersonalMeetingsManager.Domain
     internal interface IConsoleCommandHandler
     {
         string RemoveOldTextAfterMoveToNewLine(string command, string stringInfo);
-        void WriteNotificationOnNewLine(string message/*, DateTime nowDateTime*/);
+        void WriteCommandToConsole(string command);
+        //void WriteNotificationOnNewLine(string message/*, DateTime nowDateTime*/);
         //void WriteStartMeetingNotificationOnNewLine(Meeting meeting);
         //void WriteNotificationOnNewLine(Meeting meeting);
         //void WriteNotificationOnNewLine(Meeting meeting, TimeSpan remainingTime);

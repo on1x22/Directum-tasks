@@ -65,7 +65,7 @@ namespace PersonalMeetingsManager
                     await gmcHandler.GetMeetingsByDayAsync(arguments[1], new ConsoleMeetingsInfoWriter());
                     break;
                 case "Изменить":                    
-                    var umcHandler = new UpdateMeetingCommandHandler(_repository);
+                    var umcHandler = new UpdateMeetingCommandHandler(_repository, _consoleCommandHandler);
                     await umcHandler.UpdateMeetingAsync(arguments[1]);
                     //await UpdateMeetingAsync(arguments[1]);
                     break;

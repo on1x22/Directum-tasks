@@ -16,7 +16,8 @@ namespace PersonalMeetingsManager.DAL.Models
                 Id = Id, 
                 Subject = Subject, 
                 StartDateTime = StartDateTime, 
-                EndDateTime = EndDateTime 
+                EndDateTime = EndDateTime,
+                MeetingNotificationTimeInMinutes = MeetingNotificationTimeInMinutes
             }; 
         
     }
