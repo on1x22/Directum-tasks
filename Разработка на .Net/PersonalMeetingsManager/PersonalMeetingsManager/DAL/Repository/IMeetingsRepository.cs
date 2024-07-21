@@ -15,6 +15,6 @@ namespace PersonalMeetingsManager.DAL.Repository
         Task<Meeting> AddMeetingAsync(Meeting meeting);
         Task<Meeting> UpdateMeetingAsync(Meeting meeting);
         Task<Meeting> DeleteMeetingAsync(int id);
-        Task<bool> CheckIntersectMeetingsDatesAsync(Meeting meeting);
+        Task<bool> CheckIntersectMeetingDatesAsync(Meeting meeting);
     }
 }

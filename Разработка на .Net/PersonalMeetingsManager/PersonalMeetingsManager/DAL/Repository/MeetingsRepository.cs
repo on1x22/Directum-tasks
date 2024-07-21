@@ -58,7 +58,7 @@ namespace PersonalMeetingsManager.DAL.Repository
             await SaveChangesAsync();
             return meeting;
         }
-        public async Task<bool> CheckIntersectMeetingsDatesAsync(Meeting meeting)
+        public async Task<bool> CheckIntersectMeetingDatesAsync(Meeting meeting)
         {
             var intersectedMeetings = await _dbContext.Meetings
                 .Where(m => ((meeting.StartDateTime >= m.StartDateTime && meeting.StartDateTime < m.EndDateTime) ||
