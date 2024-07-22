@@ -1,4 +1,4 @@
-﻿namespace PersonalMeetingsManager.Domain
+﻿namespace PersonalMeetingsManager.Domain.Services
 {
     internal interface IMeetingsInspectorService
     {

@@ -2,15 +2,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using PersonalMeetingsManager.DAL.Contexts;
 using PersonalMeetingsManager.DAL.Repository;
-using PersonalMeetingsManager.Domain;
+using PersonalMeetingsManager.Domain.Services;
+using PersonalMeetingsManager.Infrastructure;
 
-namespace PersonalMeetingsManager
-{
-    internal class Program
-    {
-        static async Task Main(string[] args)
-        {
-            var serviceProvider = new ServiceCollection()
+var serviceProvider = new ServiceCollection()
                 .AddSingleton<IMeetingsRepository, MeetingsRepository>()
                 .AddSingleton<IManagerService, ManagerService>()
                 .AddSingleton<IMeetingsInspectorService, MeetingsInspectorService>()
@@ -19,27 +14,24 @@ namespace PersonalMeetingsManager
                 .AddDbContext<MeetingsDbContext>(options =>
                     options.UseInMemoryDatabase("MeetingsDb"))
                 .BuildServiceProvider();
-            
 
-            Console.WriteLine("ПРИЛОЖЕНИЕ ДЛЯ УПРАВЛЕНИЯ ЛИЧНЫМИ ВСТРЕЧАМИ");
-            var ms = serviceProvider.GetService<IManagerService>();
-            ms.ShowHelp();
-            Console.WriteLine();
 
-            var mi = serviceProvider.GetService<IMeetingsInspectorService>();            
-            Task ds = Task.Run(mi.InspectMeetingsAsync);
+Console.WriteLine("ПРИЛОЖЕНИЕ ДЛЯ УПРАВЛЕНИЯ ЛИЧНЫМИ ВСТРЕЧАМИ");
+var ms = serviceProvider.GetService<IManagerService>();
+ms.ShowHelp();
+Console.WriteLine();
 
-            var lastCommandHandler = serviceProvider.GetService<ILastCommandInfo>();
+var mi = serviceProvider.GetService<IMeetingsInspectorService>();
+Task ds = Task.Run(mi.InspectMeetingsAsync);
 
-            while (true)
-            {
-                var lastCommand = "Введите команду: ";
-                lastCommandHandler.LastCommand = lastCommand;
-                Console.Write(lastCommand);
-                var command = Console.ReadLine();                
-                await ms.Execute(command);
-                Console.WriteLine();
-            }
-        }
-    }
+var lastCommandHandler = serviceProvider.GetService<ILastCommandInfo>();
+
+while (true)
+{
+    var lastCommand = "Введите команду: ";
+    lastCommandHandler.LastCommand = lastCommand;
+    Console.Write(lastCommand);
+    var command = Console.ReadLine();
+    await ms.Execute(command);
+    Console.WriteLine();
 }

@@ -1,6 +1,6 @@
 ﻿using PersonalMeetingsManager.DAL.Models;
 
-namespace PersonalMeetingsManager.Domain
+namespace PersonalMeetingsManager.Infrastructure
 {
     internal class ConsoleMeetingsInfoWriter : IMeetingsInfoWriter
     {

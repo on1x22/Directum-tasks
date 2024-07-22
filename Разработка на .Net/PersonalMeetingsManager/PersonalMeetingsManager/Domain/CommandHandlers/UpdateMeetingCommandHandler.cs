@@ -1,7 +1,7 @@
 ﻿using PersonalMeetingsManager.DAL.Models;
 using PersonalMeetingsManager.DAL.Repository;
+using PersonalMeetingsManager.Infrastructure;
 using System.Globalization;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace PersonalMeetingsManager.Domain.CommandHandlers
 {
@@ -19,7 +19,6 @@ namespace PersonalMeetingsManager.Domain.CommandHandlers
         }
         internal async Task UpdateMeetingAsync(string meetingIdString)
         {
-            //IFormatProvider provider = new CultureInfo("ru-RU");
             if (!int.TryParse(meetingIdString, out int meetingId))
             {
                 Console.WriteLine("Задан некорректный номер встречи.Операция изменения встречи отменена");
@@ -27,103 +26,21 @@ namespace PersonalMeetingsManager.Domain.CommandHandlers
             }
 
             var meetingFromDb = await _repository.GetMeetingByIdAsync(meetingId);
-            var meetingForUpdate = /*new Meeting() { Id = meetingFromDb.Id };*/meetingFromDb.Clone();
+            var meetingForUpdate = meetingFromDb.Clone();
             if (meetingFromDb == null)
             {
                 Console.WriteLine($"Встреча с Id={meetingId} не существует");
                 return;
             }
 
-            //var command = $"Старое значение: {meetingFromDb.Subject}\n" +
-            //    $"Для сохранения старого значения оставьте пустую строку и нажмите Enter\n" +
-            //    $"Введите новую тему встречи: ";
-            ///*Console.WriteLine($"Старое значение: {meetingFromDb.Subject}\n" +
-            //    $"Для сохранения старого значения оставьте пустую строку и нажмите Enter\n" +
-            //    $"Введите новую тему встречи: ");*/
-            //_consoleCommandHandler.WriteCommandToConsole(command);
-            //var subject = Console.ReadLine();
-            //if (!string.IsNullOrEmpty(subject))
-            //    meetingForUpdate.Subject = subject;
             UpdateSubject(meetingFromDb, meetingForUpdate);
-
-            //command = $"Старое значение: {meetingFromDb.StartDateTime}\n" +
-            //    $"Для сохранения старого значения оставьте пустую строку и нажмите Enter\n" +
-            //    $"Введите новое время начала встречи в формате [ДД.ММ.ГГГГ ЧЧ:ММ]: ";
-            ///*Console.WriteLine($"Старое значение: {meetingFromDb.StartDateTime}\n" +
-            //    $"Для сохранения старого значения оставьте пустую строку и нажмите Enter\n" +
-            //    $"Введите новое время начала встречи в формате [ДД.ММ.ГГГГ ЧЧ:ММ]: ");*/
-            //_consoleCommandHandler.WriteCommandToConsole(command);
-            //var startDateTimeString = Console.ReadLine();
-            //if (!string.IsNullOrEmpty(startDateTimeString))
-            //{
-            //    DateTime startDateTime;
-            //    try
-            //    {
-            //        startDateTime = DateTime.Parse(startDateTimeString, provider);
-            //    }
-            //    catch (FormatException)
-            //    {
-            //        Console.WriteLine("Задана некорректная дата начала встречи. Операция изменения встречи отменена");
-            //        return;
-            //    }
-            //    if (startDateTime <= DateTime.Now)
-            //    {
-            //        Console.WriteLine("Встреча может быть назначена только на будущее время. Операция изменения встречи отменена");
-            //        return;
-            //    }
-            //    meetingForUpdate.StartDateTime = startDateTime;
-            //}
+                        
             if (!TryUpdateStartDateTime(meetingFromDb, meetingForUpdate))
                 return;
 
-            //command = $"Старое значение: {meetingFromDb.EndDateTime}\n" +
-            //    $"Для сохранения старого значения оставьте пустую строку и нажмите Enter\n" +
-            //    $"Введите новое время окончания встречи в формате [ДД.ММ.ГГГГ ЧЧ:ММ]: ";
-            ///*Console.WriteLine($"Старое значение: {meetingFromDb.EndDateTime}\n" +
-            //    $"Для сохранения старого значения оставьте пустую строку и нажмите Enter\n" +
-            //    $"Введите новое время окончания встречи в формате [ДД.ММ.ГГГГ ЧЧ:ММ]: ");*/
-            //_consoleCommandHandler.WriteCommandToConsole(command);
-            //var endDateTimeString = Console.ReadLine();
-            //if (!string.IsNullOrEmpty(endDateTimeString))
-            //{
-            //    DateTime endDateTime;
-            //    try
-            //    {
-            //        endDateTime = DateTime.Parse(endDateTimeString, provider);
-            //    }
-            //    catch (FormatException)
-            //    {
-            //        Console.WriteLine("Задана некорректная дата окончания встречи. Операция изменения встречи отменена");
-            //        return;
-            //    }
-            //    if (endDateTime <= meetingForUpdate.StartDateTime)
-            //    {
-            //        Console.WriteLine("Время окончания встречи должно быть больше времени начала встречи. Операция изменения встречи отменена");
-            //        return;
-            //    }
-            //    meetingForUpdate.EndDateTime = endDateTime;
-            //}
             if (!TryUpdateFinishDateTime(meetingFromDb, meetingForUpdate))
                 return;
 
-            //command = $"Старое значение:{meetingFromDb.MeetingNotificationTimeInMinutes}\n" +
-            //    $"Для сохранения старого значения оставьте пустую строку и нажмите Enter\n" +
-            //    $"Введите новое время напоминания о встрече в минутах: ";
-            ///*Console.WriteLine($"Старое значение:{meetingFromDb.MeetingNotificationTimeInMinutes}\n" +
-            //    $"Для сохранения старого значения оставьте пустую строку и нажмите Enter\n" +
-            //    $"Введите новое время напоминания о встрече в минутах: ");*/
-            //_consoleCommandHandler.WriteCommandToConsole(command);
-            //var notificationTimeString = Console.ReadLine();
-            //if (!string.IsNullOrEmpty(notificationTimeString))
-            //{
-            //    if (!int.TryParse(notificationTimeString, out int notificationTime))
-            //    {
-            //        Console.WriteLine("Задано некорректное время напоминания о встрече. Операция изменения встречи отменена");
-            //        return;
-            //    }
-
-            //    meetingForUpdate.MeetingNotificationTimeInMinutes = notificationTime;
-            //}
             if (!TryUpdateNotificationTimeInMinute(meetingFromDb, meetingForUpdate))
                 return;
 
