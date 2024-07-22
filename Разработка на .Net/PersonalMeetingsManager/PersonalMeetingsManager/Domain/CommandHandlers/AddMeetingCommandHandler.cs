@@ -1,5 +1,6 @@
 ﻿using PersonalMeetingsManager.DAL.Models;
 using PersonalMeetingsManager.DAL.Repository;
+using PersonalMeetingsManager.Infrastructure;
 using System.Globalization;
 
 namespace PersonalMeetingsManager.Domain.CommandHandlers
@@ -9,7 +10,6 @@ namespace PersonalMeetingsManager.Domain.CommandHandlers
         private readonly IMeetingsRepository _repository;
         private readonly ILastCommandInfo _lastCommandInfo;
         private readonly IConsoleCommandHandler _consoleCommandHandler;
-        //private string _command;
         private readonly IFormatProvider provider = new CultureInfo("ru-RU");
 
         internal AddMeetingCommandHandler(IMeetingsRepository repository,
@@ -52,11 +52,10 @@ namespace PersonalMeetingsManager.Domain.CommandHandlers
         private bool TryAddSubject(out string result)
         {
             var command = "Введите тему встречи: ";
-            //WriteCommandToConsole(/*"Введите тему встречи: "*/command);
             _consoleCommandHandler.WriteCommandToConsole(command);
             var subject = Console.ReadLine();
             subject = _consoleCommandHandler
-                .RemoveOldTextAfterMoveToNewLine(/*_command*/command, subject);
+                .RemoveOldTextAfterMoveToNewLine(command, subject);
 
             if (string.IsNullOrWhiteSpace(subject))
             {
@@ -71,12 +70,11 @@ namespace PersonalMeetingsManager.Domain.CommandHandlers
         private bool TryAddStartDateTime(out DateTime result)
         {
             var command = "Введите время начала встречи в формате [ДД.ММ.ГГГГ ЧЧ:ММ]: ";
-            //WriteCommandToConsole(/*"Введите время начала встречи в формате [ДД.ММ.ГГГГ ЧЧ:ММ]: "*/command);
             _consoleCommandHandler.WriteCommandToConsole(command);
             var startDateTimeString = Console.ReadLine();
 
             startDateTimeString = _consoleCommandHandler
-                .RemoveOldTextAfterMoveToNewLine(/*_command*/command, startDateTimeString);
+                .RemoveOldTextAfterMoveToNewLine(command, startDateTimeString);
 
             DateTime startDateTime;
             try
@@ -102,11 +100,10 @@ namespace PersonalMeetingsManager.Domain.CommandHandlers
         private bool TryAddFinishDateTime(DateTime startDateTime, out DateTime result)
         {
             var command = "Введите время окончания встречи в формате [ДД.ММ.ГГГГ ЧЧ:ММ]: ";
-            //WriteCommandToConsole(/*"Введите время окончания встречи в формате [ДД.ММ.ГГГГ ЧЧ:ММ]: "*/command);
             _consoleCommandHandler.WriteCommandToConsole(command);
             var endDateTimeString = Console.ReadLine();
             endDateTimeString = _consoleCommandHandler
-                .RemoveOldTextAfterMoveToNewLine(/*_command*/command, endDateTimeString);
+                .RemoveOldTextAfterMoveToNewLine(command, endDateTimeString);
 
             DateTime finishDateTime;
             try
@@ -132,11 +129,10 @@ namespace PersonalMeetingsManager.Domain.CommandHandlers
         private bool TryAddNotificationTimeInMinute(out int result)
         {
             var command = "Введите время напоминания о встрече в минутах: ";
-            //WriteCommandToConsole(/*"Введите время напоминания о встрече в минутах: "*/ command);
             _consoleCommandHandler.WriteCommandToConsole(command);
             var notificationTimeString = Console.ReadLine();
             notificationTimeString = _consoleCommandHandler
-                .RemoveOldTextAfterMoveToNewLine(/*_command*/command, notificationTimeString);
+                .RemoveOldTextAfterMoveToNewLine(command, notificationTimeString);
 
             if (!int.TryParse(notificationTimeString, out int notificationTime))
             {
@@ -164,15 +160,5 @@ namespace PersonalMeetingsManager.Domain.CommandHandlers
             }
             return true;
         }
-
-        //private void WriteCommandToConsole(string command)
-        //{
-        //    /*_command = command;*/
-        //    _lastCommandInfo.LastCommand = /*_command*/command;
-        //    Console.Write(/*_command*/command);
-
-        //    var (Left, _) = Console.GetCursorPosition();
-        //    _lastCommandInfo.LastPosition = Left;
-        //}
     }
 }

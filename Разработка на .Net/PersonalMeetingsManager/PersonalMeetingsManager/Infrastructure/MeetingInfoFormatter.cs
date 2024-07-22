@@ -1,6 +1,6 @@
 ﻿using PersonalMeetingsManager.DAL.Models;
 
-namespace PersonalMeetingsManager.Domain
+namespace PersonalMeetingsManager.Infrastructure
 {
     internal static class MeetingInfoFormatter
     {
@@ -9,14 +9,14 @@ namespace PersonalMeetingsManager.Domain
             string mainInfo = $"- {meeting.Subject} (Id={meeting.Id}) с {meeting.StartDateTime} " +
                             $"по {meeting.EndDateTime}. ";
 
-            string notificationInfo = String.Empty;
+            string notificationInfo = string.Empty;
             if (meeting.MeetingNotificationTimeInMinutes > 0)
-                notificationInfo = $"Уведомление за { meeting.MeetingNotificationTimeInMinutes}" +
+                notificationInfo = $"Уведомление за {meeting.MeetingNotificationTimeInMinutes}" +
                     $" минут до встречи.";
             else
                 notificationInfo = $"Уведомление о встрече отсутствует.";
 
-            return mainInfo + notificationInfo ;
+            return mainInfo + notificationInfo;
         }
 
         internal static string GetMeetingNotificationString(Meeting meeting)

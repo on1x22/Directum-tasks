@@ -1,4 +1,4 @@
-﻿namespace PersonalMeetingsManager.Domain
+﻿namespace PersonalMeetingsManager.Infrastructure
 {
     internal interface ILastCommandInfo
     {
